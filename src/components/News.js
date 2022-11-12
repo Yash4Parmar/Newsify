@@ -10,7 +10,6 @@ export default class News extends Component {
         category: "general"
     }
 
-
     constructor() {
         super();
         this.state = {
@@ -65,7 +64,7 @@ export default class News extends Component {
     render() {
         return (
             <div className='container my-3'>
-                <h1 className='text-center'>Today's Headlines:</h1>
+                <h1 className='text-center' style={{ margin: "25px 0px" }}>Today's Headlines:</h1>
                 {this.state.loading && <Loading />}
                 <div className="row my-3">
                     {!this.state.loading && this.state.article.map((ele) => {
