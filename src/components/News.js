@@ -20,6 +20,7 @@ export default class News extends Component {
     }
 
     async componentDidMount() {
+        this.props.setProgress(20)
         this.setState({ loading: true })
 
         let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a116cd59c7545d4b9ecfbe4871ea76b&page=1&pageSize=${this.props.pageSize}`
@@ -32,12 +33,13 @@ export default class News extends Component {
             pageSize: parsedData.pageSize,
             loading: false
         })
-        // console.log(this.state.article.length);
+        this.props.setProgress(100)
     }
 
     handleNextClick = async () => {
-        if (this.state.page + 1 > Math.ceil(this.state.totalResults / this.state.pageSize)) {
+        this.props.setProgress(20)
 
+        if (this.state.page + 1 > Math.ceil(this.state.totalResults / this.state.pageSize)) {
         } else {
             this.setState({ loading: true })
             let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a116cd59c7545d4b9ecfbe4871ea76b&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`
@@ -49,9 +51,11 @@ export default class News extends Component {
                 loading: false
             })
         }
+        this.props.setProgress(100)
     }
 
     handlePrevClick = async () => {
+        this.props.setProgress(20)
         let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a116cd59c7545d4b9ecfbe4871ea76b&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`
         const data = await fetch(url)
         const parsedData = await data.json();
@@ -59,12 +63,13 @@ export default class News extends Component {
             article: parsedData.articles,
             page: this.state.page - 1
         })
+        this.props.setProgress(100)
     }
 
     render() {
         return (
             <div className='container my-3'>
-                <h1 className='text-center' style={{ margin: "25px 0px" }}>Today's Headlines:</h1>
+                <h1 className='text-center' style={{ margin: "25px 0px" }}>Today's {this.props.category} headlines</h1>
                 {this.state.loading && <Loading />}
                 <div className="row my-3">
                     {!this.state.loading && this.state.article.map((ele) => {
@@ -75,7 +80,7 @@ export default class News extends Component {
                 </div>
                 <div className="container d-flex justify-content-between">
                     <button disabled={this.state.page <= 1} onClick={this.handlePrevClick} type="button" className="btn btn-primary">Previous</button>
-                    <button disabled={this.state.page + 1 > Math.ceil(this.state.totalResults / this.state.pageSize)} type="button" onClick={this.handleNextClick} className="btn btn-primary">Next</button>
+                    <button disabled={(this.state.page + 1 > Math.ceil(this.state.totalResults / this.state.pageSize))} type="button" onClick={this.handleNextClick} className="btn btn-primary">Next</button>
                 </div>
             </div>
         )
