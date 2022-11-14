@@ -20,9 +20,8 @@ export default class News extends Component {
     }
 
     async componentDidMount() {
-        this.props.setProgress(20)
         this.setState({ loading: true })
-
+        this.props.setProgress(20)
         let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a116cd59c7545d4b9ecfbe4871ea76b&page=1&pageSize=${this.props.pageSize}`
 
         const data = await fetch(url);
@@ -34,13 +33,11 @@ export default class News extends Component {
             loading: false
         })
         this.props.setProgress(100)
+
     }
 
     handleNextClick = async () => {
-        this.props.setProgress(20)
-
-        if (this.state.page + 1 > Math.ceil(this.state.totalResults / this.state.pageSize)) {
-        } else {
+        if (!(this.state.page + 1 > Math.ceil(this.state.totalResults / this.state.pageSize))) {
             this.setState({ loading: true })
             let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=5a116cd59c7545d4b9ecfbe4871ea76b&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`
             const data = await fetch(url)
@@ -50,8 +47,8 @@ export default class News extends Component {
                 page: this.state.page + 1,
                 loading: false
             })
+            this.props.setProgress(100)
         }
-        this.props.setProgress(100)
     }
 
     handlePrevClick = async () => {
@@ -74,7 +71,7 @@ export default class News extends Component {
                 <div className="row my-3">
                     {!this.state.loading && this.state.article.map((ele) => {
                         return <div className="col-md-4" key={ele.url}>
-                            <NewsItem title={ele.title} description={ele.description} urlOfImg={ele.urlToImage} newsUrl={ele.url} />
+                            <NewsItem title={ele.title} description={ele.description} urlOfImg={ele.urlToImage} newsUrl={ele.url} mainSiteName={ele.source.name} />
                         </div>
                     })}
                 </div>
